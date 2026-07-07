@@ -292,3 +292,90 @@ h2 {
 
   .main { padding: 1.25rem 1rem 2.5rem; }
 }
+
+/* ---------- Medications view / forms ---------- */
+
+.view-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.med-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 1.25rem;
+}
+
+.med-details {
+  margin: 0;
+}
+.med-details div {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+}
+.med-details dt {
+  min-width: 4.5rem;
+  color: var(--ink-soft);
+}
+.med-details dd { margin: 0; font-weight: 700; }
+
+.med-form { margin-bottom: 1.25rem; }
+
+.field { margin-bottom: 1rem; }
+
+.field label,
+.field legend {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.field input,
+.field select {
+  font: inherit;
+  color: var(--ink);
+  min-height: var(--touch);
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  width: 100%;
+  max-width: 22rem;
+}
+
+fieldset.field {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.9rem 1rem 1rem;
+}
+
+#time-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+#time-inputs input { width: auto; }
+
+.btn-small {
+  min-height: 36px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.95rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.form-error {
+  margin: 0.75rem 0 0;
+  color: var(--alert);
+  font-weight: 700;
+}

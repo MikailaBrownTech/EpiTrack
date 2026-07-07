@@ -10,6 +10,7 @@ I'm building a single-page web app called EpiTrack for parents tracking a child'
 ## Features
 
     - Sketch the storage access layer
+    -On the medications view, create a layout to view all medications and add medication button that calls to the getAll and insert functions in the storage.js file
 
 ## Debugging
 

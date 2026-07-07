@@ -4,6 +4,13 @@
  */
 
 import { initStorage } from "./storage.js";
+import { renderMedications } from "./medications.js";
+
+// Views that need a render function when shown
+const RENDERERS = {
+  medications: renderMedications,
+};
+
 
 const VIEWS = {
   dashboard:   { title: "Dashboard",   subtitle: "Today at a glance" },
@@ -36,6 +43,10 @@ function showView(name) {
   // Update the page heading
   document.getElementById("view-title").textContent = VIEWS[name].title;
   document.getElementById("view-subtitle").textContent = VIEWS[name].subtitle;
+
+    // Render the view's content if it has a renderer
+  RENDERERS[name]?.();
+
 }
 
 function currentViewFromHash() {
