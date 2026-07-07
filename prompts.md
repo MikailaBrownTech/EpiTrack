@@ -6,6 +6,7 @@ I'm building a single-page web app called EpiTrack for parents tracking a child'
 
 ## Boilerplate and Layout
     - Based on that data structure, create the HTML boilerplate and a dashboard layout with a sidebar nav and a main content area. Keep it clean and accessible since the users are stressed caregivers.
+    - Change the dashboard view and highlight nav item when nav item is clicked
 ## Features
 
     - Sketch the storage access layer
