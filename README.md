@@ -43,6 +43,7 @@ My plan was to build a web application dashboard using HTML, CSS, and plain Java
 - Sharing seizure information between family and caregiving accounts
 - Chart visualization
 - Print seizure and medication logs
+- Medication reminders
 
 ---
 
