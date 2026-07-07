@@ -1,11 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EpiTrack - Manage Epilepsy</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="EpiTrack — seizure and medication tracking for caregivers of children with epilepsy." />
+  <title>EpiTrack — Dashboard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <h1>EpiTrack</h1>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <div class="app-shell">
+    <!-- ================= Sidebar ================= -->
+    <header class="sidebar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">Ep</span>
+        <span class="brand-name">EpiTrack</span>
+      </div>
+
+      <!-- Signature action: always visible, always in the same place -->
+      <button type="button" class="btn-emergency" id="log-seizure-btn">
+        Log a seizure
+      </button>
+
+      <nav class="sidebar-nav" aria-label="Main">
+        <ul>
+          <li><a href="#dashboard" class="nav-link" aria-current="page" data-view="dashboard">Dashboard</a></li>
+          <li><a href="#medications" class="nav-link" data-view="medications">Medications</a></li>
+          <li><a href="#doses" class="nav-link" data-view="doses">Dose log</a></li>
+          <li><a href="#seizures" class="nav-link" data-view="seizures">Seizures</a></li>
+          <li><a href="#triggers" class="nav-link" data-view="triggers">Triggers</a></li>
+          <li><a href="#notes" class="nav-link" data-view="notes">Notes</a></li>
+        </ul>
+      </nav>
+
+      <p class="sidebar-footnote">
+        Data is saved on this device only.
+      </p>
+    </header>
+
+    <!-- ================= Main content ================= -->
+    <main id="main-content" class="main" tabindex="-1">
+      <div class="page-header">
+        <h1 id="view-title">Dashboard</h1>
+        <p class="page-subtitle" id="view-subtitle">Today at a glance</p>
+      </div>
+
+      <!-- Dashboard view -->
+      <section id="view-dashboard" class="view" aria-labelledby="view-title">
+
+        <div class="card-grid">
+          <section class="card" aria-labelledby="today-meds-heading">
+            <h2 id="today-meds-heading">Today's medications</h2>
+            <ul class="record-list" id="today-meds-list">
+              <!-- populated by JS -->
+            </ul>
+            <p class="empty-state" id="today-meds-empty">
+              No medications added yet.
+              <a href="#medications" data-view="medications">Add the first medication</a>
+            </p>
+          </section>
+
+          <section class="card" aria-labelledby="recent-seizures-heading">
+            <h2 id="recent-seizures-heading">Recent seizures</h2>
+            <ul class="record-list" id="recent-seizures-list"></ul>
+            <p class="empty-state" id="recent-seizures-empty">
+              No seizures logged. When one happens, use
+              <strong>Log a seizure</strong> — it's always in the sidebar.
+            </p>
+          </section>
+
+          <section class="card" aria-labelledby="missed-doses-heading">
+            <h2 id="missed-doses-heading">Missed doses</h2>
+            <ul class="record-list" id="missed-doses-list"></ul>
+            <p class="empty-state" id="missed-doses-empty">
+              Nothing missed. Log a missed dose from the
+              <a href="#doses" data-view="doses">dose log</a>.
+            </p>
+          </section>
+        </div>
+      </section>
+
+      <!-- Other views: hidden until their nav link is selected.
+           Each section is a mount point for its feature's JS. -->
+      <section id="view-medications" class="view" hidden aria-label="Medications"></section>
+      <section id="view-doses" class="view" hidden aria-label="Dose log"></section>
+      <section id="view-seizures" class="view" hidden aria-label="Seizures"></section>
+      <section id="view-triggers" class="view" hidden aria-label="Triggers"></section>
+      <section id="view-notes" class="view" hidden aria-label="Notes"></section>
+
+      <!-- Polite live region for save confirmations ("Medication saved") -->
+      <div id="status-announcer" class="visually-hidden" role="status" aria-live="polite"></div>
+    </main>
+  </div>
+
+  <script type="module" src="app.js"></script>
 </body>
 </html>
