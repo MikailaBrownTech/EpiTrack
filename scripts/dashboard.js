@@ -5,6 +5,7 @@
 
 import { getAll, getById } from "./storage.js";
 import { logDose, dosesToday, recentMissedDoses } from "./doses.js";
+import { recentSeizures } from "./seizures.js";
 
 export function renderDashboard() {
   renderTodayMeds();
