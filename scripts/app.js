@@ -5,10 +5,15 @@
 
 import { initStorage } from "./storage.js";
 import { renderMedications } from "./medications.js";
+import { renderDoses } from "./doses.js";
+import { renderDashboard } from "./dashboard.js";
+
 
 // Views that need a render function when shown
 const RENDERERS = {
+  dashboard: renderDashboard,
   medications: renderMedications,
+  doses: renderDoses,
 };
 
 
