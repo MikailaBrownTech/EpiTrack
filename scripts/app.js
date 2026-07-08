@@ -9,6 +9,7 @@ import { renderDoses } from "./doses.js";
 import { renderDashboard } from "./dashboard.js";
 import { renderSeizures, openSeizureLog } from "./seizures.js";
 import { renderTriggers } from "./triggers.js";
+import { renderNotes } from "./notes.js";
 
 // Views that need a render function when shown
 const RENDERERS = {
@@ -17,6 +18,7 @@ const RENDERERS = {
   doses: renderDoses,
   seizures: renderSeizures,
   triggers: renderTriggers,
+  notes: renderNotes,
 };
 
 
