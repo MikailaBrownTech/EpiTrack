@@ -25,15 +25,15 @@ function renderTodayMeds() {
   list.innerHTML = meds.map((med) => {
     const logged = today.filter((d) => d.medId === med.id);
     const summary = logged.length
-      ? logged.map((d) => d.status === "taken" ? "✓" : "✗").join(" ")
-      : "Not logged yet";
+      ? logged.map(doseSummaryLine).join("")
+      : `<span class="record-when">Not logged yet</span>`;
 
     return `
       <li>
         <div class="today-med-row">
           <span>
             <strong>${escapeHTML(med.name)}</strong>
-            <span class="record-when">${escapeHTML(summary)}</span>
+            ${summary}
           </span>
           <span class="today-med-actions">
             <button type="button" class="btn btn-small"
@@ -59,6 +59,20 @@ function renderTodayMeds() {
     announce(`${med.name} logged as ${btn.dataset.log}.`);
     renderDashboard();
   };
+}
+
+/** One readable status line for a logged dose. */
+function doseSummaryLine(dose) {
+  if (dose.status === "taken") {
+    const t = formatTime(new Date(dose.takenAt ?? dose.scheduledFor ?? dose.createdAt));
+    return `<p class="dose-line is-taken">Taken at ${t}</p>`;
+  }
+  const t = formatTime(new Date(dose.scheduledFor ?? dose.createdAt));
+  return `<p class="dose-line is-missed">Missed ${t} dose</p>`;
+}
+
+function formatTime(date) {
+  return date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
 }
 
 // ---------------------------------------------------------------------------
@@ -88,9 +102,8 @@ function renderMissedDoses() {
 
 function renderRecentSeizures() {
   const list = document.getElementById("recent-seizures-list");
-  const seizures = getAll("seizures")
-    .sort((a, b) => b.startedAt.localeCompare(a.startedAt))
-    .slice(0, 5);
+  // Last 30 days, capped at 30 entries
+  const seizures = recentSeizures(30, 30);
 
   list.innerHTML = seizures.map((s) => `
     <li>
