@@ -60,8 +60,9 @@ function renderTodayMeds() {
       const med = getById("medications", medId);
       logDose({
         medId,
-        status: action,                       // "taken" | "missed"
-        scheduledFor: slotDateTime(slot),     // the slot this satisfies
+        status: action,                    // "taken" | "missed"
+        when: slotDateTime(slot),          // record AT the slot time,
+        scheduledFor: slotDateTime(slot),  // not when the button was tapped
       });
       announce(`${med.name} ${slot} dose logged as ${action}.`);
     }
@@ -74,9 +75,8 @@ function slotRow(med, slot, dose) {
   const label = formatTime(slotDateTime(slot.time));
 
   if (dose) {
-    const statusText = dose.status === "taken"
-      ? `Taken${dose.takenAt ? " at " + formatTime(new Date(dose.takenAt)) : ""}`
-      : "Missed";
+    // Slot time already shows on the left, so status is just Taken / Missed.
+    const statusText = dose.status === "taken" ? "Taken" : "Missed";
     const statusClass = dose.status === "taken" ? "is-taken" : "is-missed";
     return `
       <li class="slot-row">

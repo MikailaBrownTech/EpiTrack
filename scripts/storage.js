@@ -187,16 +187,8 @@ function seedDefaults() {
 }
 
 // ---------------------------------------------------------------------------
-// Export / import (backup) - Used for debugging during development
+// Import (backup) - Used for debugging during development
 // ---------------------------------------------------------------------------
-
-export function exportAll() {
-  const dump = { meta: getMeta() };
-  for (const name of COLLECTIONS) {
-    dump[name] = getAll(name, { includeDeleted: true });
-  }
-  return JSON.stringify(dump, null, 2);
-}
 
 
 export function importBackup(jsonText) {

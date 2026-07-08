@@ -8,6 +8,9 @@ import { getAll, getById, insert, update, softDelete } from "./storage.js";
 
 const mount = document.getElementById("view-medications");
 
+// Most medications are dosed 1–4 times daily; cap generously to catch runaway input.
+const MAX_TIMES = 6;
+
 // ---------------------------------------------------------------------------
 // Render
 // ---------------------------------------------------------------------------
@@ -176,19 +179,34 @@ function openMedForm(medId) {
   const form = document.getElementById("med-form");
   form.querySelector("#med-name").focus();
  
-  form.querySelector("#add-time-btn").addEventListener("click", () => {
-  const wrap = form.querySelector("#time-inputs");
-  wrap.insertAdjacentHTML("beforeend", timeRow());
-  wrap.querySelector(".time-row:last-child input").focus();
-});
+  const addTimeBtn = form.querySelector("#add-time-btn");
+  const timeWrap = form.querySelector("#time-inputs");
 
-// One listener handles Remove for every row, including rows added later
-form.querySelector("#time-inputs").addEventListener("click", (e) => {
-  const btn = e.target.closest("[data-remove-time]");
-  if (!btn) return;
-  btn.closest(".time-row").remove();
-  form.querySelector("#add-time-btn").focus();
-});
+  // Enable/disable "Add another time" based on how many rows exist.
+  function refreshTimeControls() {
+    const count = timeWrap.querySelectorAll(".time-row").length;
+    addTimeBtn.disabled = count >= MAX_TIMES;
+    addTimeBtn.textContent = count >= MAX_TIMES
+      ? `Maximum ${MAX_TIMES} times`
+      : "Add another time";
+  }
+  refreshTimeControls();
+
+  addTimeBtn.addEventListener("click", () => {
+    if (timeWrap.querySelectorAll(".time-row").length >= MAX_TIMES) return;
+    timeWrap.insertAdjacentHTML("beforeend", timeRow());
+    timeWrap.querySelector(".time-row:last-child input").focus();
+    refreshTimeControls();
+  });
+
+  // One listener handles Remove for every row, including rows added later.
+  timeWrap.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-remove-time]");
+    if (!btn) return;
+    btn.closest(".time-row").remove();
+    refreshTimeControls();
+    addTimeBtn.focus();
+  });
  
   form.querySelector("#cancel-med-btn").addEventListener("click", () => {
     slot.innerHTML = "";
