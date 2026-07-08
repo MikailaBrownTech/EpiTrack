@@ -80,7 +80,7 @@ export function renderSeizures() {
 
       <div class="field">
         <label for="sz-note">Journal note <span class="label-hint">(optional — what you observed, before/after)</span></label>
-        <textarea id="sz-note" name="note" rows="3"
+        <textarea id="sz-note" name="note" rows="3" maxlength="2000"
                   placeholder="e.g. Happened while falling asleep. Eyes fluttered, left arm stiff. Sleepy afterward."></textarea>
       </div>
 
@@ -167,9 +167,21 @@ function saveSeizure(form) {
   const startedAt = new Date(startedValue);
   if (startedAt > new Date()) return showError(error, "That time is in the future.");
 
+  // Duration is optional, but if given it must be a sane number of seconds.
+  let durationSeconds = null;
+  if (durationRaw !== "" && durationRaw != null) {
+    durationSeconds = Number(durationRaw);
+    if (!Number.isFinite(durationSeconds) || durationSeconds < 0) {
+      return showError(error, "Enter the duration as a number of seconds.");
+    }
+    if (durationSeconds > 3600) {
+      return showError(error, "That's over an hour — please double-check the seconds. If it's correct, this may be a medical emergency; call your doctor or emergency services.");
+    }
+  }
+
   const fields = {
     startedAt: nowISO(startedAt),
-    durationSeconds: durationRaw ? Number(durationRaw) : null,
+    durationSeconds,
     type: data.get("type"),
     triggersSuspected: data.getAll("triggers"),
   };

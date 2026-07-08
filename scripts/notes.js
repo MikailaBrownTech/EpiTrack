@@ -88,7 +88,7 @@ function noteRow(note) {
       <li class="note-row">
         <p class="note-context">${context}</p>
         <textarea class="note-edit-field" id="note-edit-${note.id}"
-                  rows="3" aria-label="Edit note">${escapeHTML(note.text)}</textarea>
+                  rows="3" maxlength="2000" aria-label="Edit note">${escapeHTML(note.text)}</textarea>
         <div class="note-actions">
           <button type="button" class="btn btn-small btn-primary"
                   data-action="save" data-id="${note.id}">Save</button>

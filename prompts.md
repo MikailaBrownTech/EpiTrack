@@ -27,3 +27,4 @@ I'm building a single-page web app called EpiTrack for parents tracking a child'
     - Users should be able to click "view all" button on home view that takes them to doses view
     - Doses view should have total taken, total missed, and total on doses view
     - On dashboard in the Today's Medications card, it should list "Taken at [time]" or "Missed [time] dose" instead of checks and x
+    - Users should be limited on duration for logging seizure duration based on reasoning for typical seizures
