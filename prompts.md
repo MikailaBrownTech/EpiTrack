@@ -11,6 +11,7 @@ I'm building a single-page web app called EpiTrack for parents tracking a child'
 
     - Sketch the storage access layer
     -On the medications view, create a layout to view all medications and add medication button that calls to the getAll and insert functions in the storage.js file
+    - Users should be able to add and view medication doses on main dashboard view and doses dashboard view
 
 ## Debugging
     - I have organizaed all my js files into /scripts directory. Now I am getting this error in the console: Loading module from “http://127.0.0.1:5500/medications.js” was blocked because of a disallowed MIME type (“text/html”).
@@ -19,4 +20,5 @@ I'm building a single-page web app called EpiTrack for parents tracking a child'
 ## Explanation
 
 ## Verification
-    
+    - Users should be able to click "view all" button on home view that takes them to doses view
+    - Doses view should have total taken, total missed, and total on doses view

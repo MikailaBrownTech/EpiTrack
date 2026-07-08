@@ -434,3 +434,61 @@ fieldset.field {
   display: flex;
   gap: 0.5rem;
 }
+
+/* ---------- Dose history rows ---------- */
+
+.dose-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.dose-row-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.card-heading-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+.card-heading-row h2 { margin-bottom: 0; }
+
+.card-link {
+  color: var(--teal);
+  font-weight: 700;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.stat {
+  text-align: center;
+  padding: 1rem;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.stat-label {
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 480px) {
+  .stats-row { grid-template-columns: 1fr; }
+}
