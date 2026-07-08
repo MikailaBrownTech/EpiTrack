@@ -78,10 +78,11 @@ export function getById(name, id) {
 }
 
 export function insert(name, item) {
+  const now = nowISO(); // single timestamp so createdAt === updatedAt on insert
   const record = {
     id: item.id ?? crypto.randomUUID(),
-    createdAt: nowISO(),
-    updatedAt: nowISO(),
+    createdAt: now,
+    updatedAt: now,
     deletedAt: null,
     ...item,
   };

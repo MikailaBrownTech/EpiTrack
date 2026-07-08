@@ -287,11 +287,17 @@ export function notesForSeizure(seizureId) {
 
 /** Open the seizures view ready to log — used by the sidebar emergency button. */
 export function openSeizureLog() {
-  editingId = null;
-  location.hash = "#seizures";
-  // If we're already on #seizures the hashchange won't fire — render directly.
-  renderSeizures();
-  document.getElementById("sz-when")?.focus();
+  editingId = null; // always start on a fresh entry, never mid-edit
+
+  if (location.hash === "#seizures") {
+    renderSeizures();
+  } else {
+    location.hash = "#seizures";
+  }
+
+  requestAnimationFrame(() => {
+    document.getElementById("sz-when")?.focus();
+  });
 }
 
 // ---------------------------------------------------------------------------

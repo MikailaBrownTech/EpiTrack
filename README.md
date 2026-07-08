@@ -6,7 +6,7 @@ Many parents and caregivers struggle to properly track their children's epilepsy
 
 ## 🔗 Live Demo
 
-https://mikailabrowntech.github.io/EpiTrack/(#)
+https://mikailabrowntech.github.io/EpiTrack/
 
 ---
 
@@ -63,7 +63,7 @@ My plan was to build a web application dashboard using HTML, CSS, and plain Java
 
 ## 🚀 Running the Project
 
-Visit the https://mikailabrowntech.github.io/EpiTrack/(#) on any device using any major browser such as Google Chrome, Firefox, or Safari.
+Visit the https://mikailabrowntech.github.io/EpiTrack/ on any device using any major browser such as Google Chrome, Firefox, or Safari.
 
 To run locally:
 1. Clone the repository to your device

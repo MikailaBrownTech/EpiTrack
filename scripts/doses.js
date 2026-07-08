@@ -16,7 +16,6 @@ let editingId = null;
 // Doses view
 // ---------------------------------------------------------------------------
 
-
 export function renderDoses() {
   const meds = getAll("medications").filter((m) => m.active);
   const doses = getAll("doseLog")
@@ -31,9 +30,6 @@ export function renderDoses() {
     `;
     return;
   }
-
-  const totalTaken = doses.filter((d) => d.status === "taken").length;
-  const totalMissed = doses.filter((d) => d.status === "missed").length;
 
   const editing = editingId ? getById("doseLog", editingId) : null;
   const when = editing
@@ -97,20 +93,7 @@ export function renderDoses() {
 
       <p class="form-error" id="dose-form-error" role="alert" hidden></p>
     </form>
-    <div class="stats-row" role="group" aria-label="Dose totals">
-    <div class="stat card">
-        <span class="stat-value">${doses.length}</span>
-        <span class="stat-label">Total logged</span>
-    </div>
-    <div class="stat card">
-        <span class="stat-value is-taken">${totalTaken}</span>
-        <span class="stat-label">Taken</span>
-    </div>
-    <div class="stat card">
-        <span class="stat-value is-missed">${totalMissed}</span>
-        <span class="stat-label">Missed</span>
-    </div>
-    </div>
+
     <h2 class="section-heading">Dose history</h2>
     <ul class="record-list card" id="dose-history">
       ${doses.map(doseItem).join("")}
@@ -203,8 +186,10 @@ function saveDoseFromForm(form) {
 
 /**
  * Shared writer used by the Dashboard quick-log.
+ * `when`        = when the dose actually happened (defaults to now)
+ * `scheduledFor`= the slot it satisfies (defaults to `when` when not given)
  */
-export function logDose({ medId, status, when = new Date(), note = "" }) {
+export function logDose({ medId, status, when = new Date(), scheduledFor = null, note = "" }) {
   const med = getById("medications", medId);
   const regimen = med ? (med.regimens ?? []).find((r) => !r.endDate) : null;
 
@@ -212,7 +197,7 @@ export function logDose({ medId, status, when = new Date(), note = "" }) {
     medId,
     status,
     takenAt: status === "taken" ? nowISO(when) : null,
-    scheduledFor: nowISO(when),
+    scheduledFor: nowISO(scheduledFor ?? when),
     amountGiven: status === "taken" && regimen ? regimen.doseAmount : null,
     note,
   });

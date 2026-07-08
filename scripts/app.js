@@ -68,6 +68,10 @@ function currentViewFromHash() {
 // back/forward buttons and page refresh work for free.
 window.addEventListener("hashchange", () => showView(currentViewFromHash()));
 
+document
+  .getElementById("log-seizure-btn")
+  ?.addEventListener("click", openSeizureLog);
+  
 // ---- Startup ----
 initStorage();
 showView(currentViewFromHash());

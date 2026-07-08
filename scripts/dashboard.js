@@ -3,7 +3,7 @@
  * Fills the three dashboard cards and provides one-tap dose logging.
  */
 
-import { getAll, getById } from "./storage.js";
+import { getAll, getById, softDelete } from "./storage.js";
 import { logDose, dosesToday, recentMissedDoses } from "./doses.js";
 import { recentSeizures } from "./seizures.js";
 
@@ -14,7 +14,7 @@ export function renderDashboard() {
 }
 
 // ---------------------------------------------------------------------------
-// Today's medications: each active med + one-tap Taken / Missed buttons
+// Today's medications: one row per scheduled slot, logged once each
 // ---------------------------------------------------------------------------
 
 function renderTodayMeds() {
@@ -23,52 +23,99 @@ function renderTodayMeds() {
   const today = dosesToday();
 
   list.innerHTML = meds.map((med) => {
-    const logged = today.filter((d) => d.medId === med.id);
-    const summary = logged.length
-      ? logged.map(doseSummaryLine).join("")
-      : `<span class="record-when">Not logged yet</span>`;
+    const regimen = (med.regimens ?? []).find((r) => !r.endDate);
+    const slots = regimen?.schedule?.length
+      ? [...regimen.schedule].sort((a, b) => a.time.localeCompare(b.time))
+      : [];
+
+    const slotRows = slots.map((slot) => {
+      const key = slotKey(slot.time);                       // "YYYY-MM-DDTHH:MM"
+      const dose = today.find(
+        (d) => d.medId === med.id &&
+               (d.scheduledFor ?? "").slice(0, 16) === key
+      );
+      return slotRow(med, slot, dose);
+    }).join("");
 
     return `
-      <li>
-        <div class="today-med-row">
-          <span>
-            <strong>${escapeHTML(med.name)}</strong>
-            ${summary}
-          </span>
-          <span class="today-med-actions">
-            <button type="button" class="btn btn-small"
-                    data-log="taken" data-id="${med.id}">
-              Taken
-            </button>
-            <button type="button" class="btn btn-small"
-                    data-log="missed" data-id="${med.id}">
-              Missed
-            </button>
-          </span>
-        </div>
+      <li class="today-med">
+        <strong class="today-med-name">${escapeHTML(med.name)}</strong>
+        <ul class="slot-list">
+          ${slotRows || `<li class="record-when">No times set for this medication.</li>`}
+        </ul>
       </li>
     `;
   }).join("");
 
-  // Delegated quick-log handler (bind once per render)
+  // Delegated handler: log a slot, or undo a logged slot
   list.onclick = (e) => {
-    const btn = e.target.closest("button[data-log]");
+    const btn = e.target.closest("button[data-action]");
     if (!btn) return;
-    const med = getById("medications", btn.dataset.id);
-    logDose({ medId: btn.dataset.id, status: btn.dataset.log });
-    announce(`${med.name} logged as ${btn.dataset.log}.`);
+    const { action, id: medId, slot, dose: doseId } = btn.dataset;
+
+    if (action === "undo") {
+      softDelete("doseLog", doseId);
+      announce("Entry undone.");
+    } else {
+      const med = getById("medications", medId);
+      logDose({
+        medId,
+        status: action,                       // "taken" | "missed"
+        scheduledFor: slotDateTime(slot),     // the slot this satisfies
+      });
+      announce(`${med.name} ${slot} dose logged as ${action}.`);
+    }
     renderDashboard();
   };
 }
 
-/** One readable status line for a logged dose. */
-function doseSummaryLine(dose) {
-  if (dose.status === "taken") {
-    const t = formatTime(new Date(dose.takenAt ?? dose.scheduledFor ?? dose.createdAt));
-    return `<p class="dose-line is-taken">Taken at ${t}</p>`;
+/** One slot row: buttons if unlogged, status + undo if logged. */
+function slotRow(med, slot, dose) {
+  const label = formatTime(slotDateTime(slot.time));
+
+  if (dose) {
+    const statusText = dose.status === "taken"
+      ? `Taken${dose.takenAt ? " at " + formatTime(new Date(dose.takenAt)) : ""}`
+      : "Missed";
+    const statusClass = dose.status === "taken" ? "is-taken" : "is-missed";
+    return `
+      <li class="slot-row">
+        <span class="slot-time">${label}</span>
+        <span class="slot-status ${statusClass}">${statusText}</span>
+        <button type="button" class="btn btn-small"
+                data-action="undo" data-dose="${dose.id}"
+                aria-label="Undo ${med.name} ${label} dose">Undo</button>
+      </li>
+    `;
   }
-  const t = formatTime(new Date(dose.scheduledFor ?? dose.createdAt));
-  return `<p class="dose-line is-missed">Missed ${t} dose</p>`;
+
+  return `
+    <li class="slot-row">
+      <span class="slot-time">${label}</span>
+      <span class="slot-actions">
+        <button type="button" class="btn btn-small"
+                data-action="taken" data-id="${med.id}" data-slot="${slot.time}"
+                aria-label="Mark ${med.name} ${label} dose taken">Taken</button>
+        <button type="button" class="btn btn-small"
+                data-action="missed" data-id="${med.id}" data-slot="${slot.time}"
+                aria-label="Mark ${med.name} ${label} dose missed">Missed</button>
+      </span>
+    </li>
+  `;
+}
+
+/** Today at HH:MM as a Date. */
+function slotDateTime(hhmm, date = new Date()) {
+  const [h, m] = hhmm.split(":").map(Number);
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate(), h, m, 0);
+}
+
+/** The 16-char local key ("YYYY-MM-DDTHH:MM") used to match a dose to a slot. */
+function slotKey(hhmm, date = new Date()) {
+  const d = slotDateTime(hhmm, date);
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}` +
+         `T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 function formatTime(date) {
